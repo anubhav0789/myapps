@@ -11,7 +11,57 @@
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>  
   	</head>
   	<body>
-    
+		<div class="container">
+			<div class="row">
+				<% if(success !=''){%>
+					<div class="alert alert-success">
+					  <strong>Success!</strong> <%= success %>
+					</div>
+					<% } %>
+				<h1>Filter Employee Records</h1>
+				<div class="col-md-12">
+					<form action="/search/" id="EmployeeForm" class="form-horizontal" method="post"  role="form">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="name" class="col-md-12 control-label">By Name</label>
+								<div class="col-md-12">
+									<input type="text" id="searchName" class="form-control" name="fltrname" placeholder="Enter Name">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="email" class="col-md-12 control-label">By Email</label>
+								<div class="col-md-12">
+									<input type="text" class="form-control" name="fltremail" placeholder="Enter Email">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="email" class="col-md-12 control-label">By Employee Type</label>
+								<div class="col-md-12">
+									<select class="form-control" name="fltremptype">
+										<option value="Hourly">Hourly</option>
+										<option value="Fixed">Fixed</option>
+										</select></div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="email" class="col-md-12 control-label">&nbsp;</label>
+								
+								<div class="col-md-12">
+									<input type="submit" class="form-control btn btn-primary" name="submit" placeholder="Filter">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
 		<div class="container">
 			<div class="row">
 			<h1><%= title %></h1>
@@ -24,8 +74,7 @@
 					<th>Hourly Rate</th>
 					<th>Total Hours</th>
 					<th>Total Amount</th>
-					<!-- <th>Profile Image</th>
-					<th>Action</th> -->
+					<th>Action</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -38,6 +87,8 @@
 					<td><%= emp.hourlyrate %></td>
 					<td><%= emp.totalHour %></td>
 					<td><%= emp.total %></td>
+					<td><a class="btn btn-primary btn-xs" href="/edit/<%= emp._id %>"><i class="fa fa-edit"></i></a>
+						<a class="btn btn-danger btn-xs" href="/delete/<%= emp._id %>"><i class="fa fa-trash"></i></a></td>
 					
 				</tr>
 				<% })}else{ %>
@@ -50,6 +101,8 @@
 			</div>	
 		</div>
 
+		
+
 		<!---Form Starts-->
 		<div class="container">
 			<div class="row">
@@ -59,7 +112,7 @@
 							<div class="panel-title">Employee Details Form</div>
 						</div>  
 						<div class="panel-body" >
-							<form action="/" id="EmployeeForm" class="form-horizontal" method="post"  role="form" enctype="multipart/form-data">
+							<form action="/" id="EmployeeForm" class="form-horizontal" method="post"  role="form">
 								<div id="signupalert" style="display:none" class="alert alert-danger">
 									<p>Error:</p>
 									<span></span>
@@ -117,5 +170,5 @@
 				</div>	
 			</div>
 		</div><!---Form Ends-->	
-  </body>
+  	</body>
 </html>
