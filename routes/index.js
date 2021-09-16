@@ -113,7 +113,7 @@ router.post('/search/', function(req, res) {
     employeeFilter.exec(function(err,data){ 
       //console.log(data);
       if(err) throw err;
-      res.render('index', { title: 'Employee Records', employees:data });
+      res.render('index', { title: 'Employee Records', employees:data, success: '' });
     });
 });
 
