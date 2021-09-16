@@ -1,13 +1,47 @@
 var express = require('express');
-var empModel = require('../modules/employee');
-var uploadModel = require('../modules/upload');
-var router = express.Router();
+var jwt = require('jsonwebtoken');
 var bodyParser = require('body-parser');
 var multer = require('multer'); //middleware for image upload
 var path = require('path');
+var router = express.Router();
+
+var empModel = require('../modules/employee');
+var uploadModel = require('../modules/upload');
+const { nextTick } = require('process');
+
+
 
 router.use(express.static(__dirname+'./public/'));
 
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  localStorage = new LocalStorage('./scratch');
+}
+
+/* Create Middleware for check o verify login */
+function checklogin(req, res, next){
+  var myToken= localStorage.getItem('myToken'); //get token from localstorage
+  try {
+    jwt.verify(myToken, 'loginToken');
+  } catch(err) {
+    res.send("You need to login to access this page.");
+  }
+  next();
+}
+/* GET login page. */
+router.get('/login', function(req, res, next) {
+    var token = jwt.sign({ foo: 'bar' }, 'loginToken');
+    localStorage.setItem('myToken', token); //Set token
+    res.send('Login Successfully.');
+});
+
+router.get('/logout', function(req, res, next) {
+    localStorage.removeItem('myToken'); //remove token from localstorage
+    res.send('Logout Successfully.');
+});
+
+
+//for upload image 
 var Storage = multer.diskStorage({
     destination : "./public/uploads/",
     filename : (req,file,cb)=>{
@@ -20,7 +54,7 @@ var upload = multer({
 }).single('file');
 
 /* For image upload page */
-router.get('/upload-file', function(req, res, next) {
+router.get('/upload-file', checklogin, function(req, res, next) {
     var imageData = uploadModel.find({});
     imageData.exec(function(err,data){
       if(err) throw err;
@@ -47,7 +81,7 @@ router.post('/upload', upload, function(req, res, next) {
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', checklogin, function(req, res, next) {
   var employee = empModel.find({});
   employee.exec(function(err, data){
     if(err) throw err;
